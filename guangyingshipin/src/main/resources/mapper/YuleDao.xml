@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.YuleDao">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yule_name as yuleName
+        ,a.yule_photo as yulePhoto
+        ,a.yule_video as yuleVideo
+        ,a.yule_types as yuleTypes
+        ,a.yule_clicknum as yuleClicknum
+        ,a.shangxia_types as shangxiaTypes
+        ,a.yule_delete as yuleDelete
+        ,a.yule_content as yuleContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.YuleView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM yule  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.yuleName != '' and params.yuleName != null and params.yuleName != 'null' ">
+                and a.yule_name like CONCAT('%',#{params.yuleName},'%')
+            </if>
+            <if test=" params.yuleVideo != '' and params.yuleVideo != null and params.yuleVideo != 'null' ">
+                and a.yule_video like CONCAT('%',#{params.yuleVideo},'%')
+            </if>
+            <if test="params.yuleTypes != null and params.yuleTypes != ''">
+                and a.yule_types = #{params.yuleTypes}
+            </if>
+            <if test="params.yuleClicknumStart != null and params.yuleClicknumStart != ''">
+                <![CDATA[  and a.yule_clicknum >= #{params.yuleClicknumStart}   ]]>
+            </if>
+            <if test="params.yuleClicknumEnd != null and params.yuleClicknumEnd != ''">
+                <![CDATA[  and a.yule_clicknum <= #{params.yuleClicknumEnd}   ]]>
+            </if>
+             <if test="params.yuleClicknum != null and params.yuleClicknum != ''">
+                and a.yule_clicknum = #{params.yuleClicknum}
+             </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.yuleDeleteStart != null and params.yuleDeleteStart != ''">
+                <![CDATA[  and a.yule_delete >= #{params.yuleDeleteStart}   ]]>
+            </if>
+            <if test="params.yuleDeleteEnd != null and params.yuleDeleteEnd != ''">
+                <![CDATA[  and a.yule_delete <= #{params.yuleDeleteEnd}   ]]>
+            </if>
+             <if test="params.yuleDelete != null and params.yuleDelete != ''">
+                and a.yule_delete = #{params.yuleDelete}
+             </if>
+            <if test=" params.yuleContent != '' and params.yuleContent != null and params.yuleContent != 'null' ">
+                and a.yule_content like CONCAT('%',#{params.yuleContent},'%')
+            </if>
+
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>

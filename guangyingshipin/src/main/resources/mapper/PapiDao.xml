@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.PapiDao">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.papi_name as papiName
+        ,a.papi_photo as papiPhoto
+        ,a.papi_video as papiVideo
+        ,a.papi_types as papiTypes
+        ,a.papi_clicknum as papiClicknum
+        ,a.shangxia_types as shangxiaTypes
+        ,a.papi_delete as papiDelete
+        ,a.papi_content as papiContent
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.PapiView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM papi  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.papiName != '' and params.papiName != null and params.papiName != 'null' ">
+                and a.papi_name like CONCAT('%',#{params.papiName},'%')
+            </if>
+            <if test=" params.papiVideo != '' and params.papiVideo != null and params.papiVideo != 'null' ">
+                and a.papi_video like CONCAT('%',#{params.papiVideo},'%')
+            </if>
+            <if test="params.papiTypes != null and params.papiTypes != ''">
+                and a.papi_types = #{params.papiTypes}
+            </if>
+            <if test="params.papiClicknumStart != null and params.papiClicknumStart != ''">
+                <![CDATA[  and a.papi_clicknum >= #{params.papiClicknumStart}   ]]>
+            </if>
+            <if test="params.papiClicknumEnd != null and params.papiClicknumEnd != ''">
+                <![CDATA[  and a.papi_clicknum <= #{params.papiClicknumEnd}   ]]>
+            </if>
+             <if test="params.papiClicknum != null and params.papiClicknum != ''">
+                and a.papi_clicknum = #{params.papiClicknum}
+             </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.papiDeleteStart != null and params.papiDeleteStart != ''">
+                <![CDATA[  and a.papi_delete >= #{params.papiDeleteStart}   ]]>
+            </if>
+            <if test="params.papiDeleteEnd != null and params.papiDeleteEnd != ''">
+                <![CDATA[  and a.papi_delete <= #{params.papiDeleteEnd}   ]]>
+            </if>
+             <if test="params.papiDelete != null and params.papiDelete != ''">
+                and a.papi_delete = #{params.papiDelete}
+             </if>
+            <if test=" params.papiContent != '' and params.papiContent != null and params.papiContent != 'null' ">
+                and a.papi_content like CONCAT('%',#{params.papiContent},'%')
+            </if>
+
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>
